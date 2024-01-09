@@ -1,10 +1,6 @@
 import { getOne } from 'api/todoApi';
+import useCustomMove from 'hooks/useCustomMove';
 import { useEffect, useState } from 'react';
-import {
-  createSearchParams,
-  useNavigate,
-  useSearchParams,
-} from 'react-router-dom';
 
 const initialState = {
   tno: 0,
@@ -27,30 +23,7 @@ const makeDiv = (title, value) => (
 
 const ReadComponent = ({ tno }) => {
   const [todo, setTodo] = useState(initialState);
-  const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
-  const page = searchParams.get('page')
-    ? parseInt(searchParams.get('page'))
-    : 1;
-  const size = searchParams.get('size')
-    ? parseInt(searchParams.get('size'))
-    : 10;
-  const search = createSearchParams({
-    page,
-    size,
-  }).toString();
-  const moveToList = () => {
-    navigate({
-      pathname: '../list',
-      search,
-    });
-  };
-  const moveToModify = (tno) => {
-    navigate({
-      pathname: `../modify/${tno}`,
-      search,
-    });
-  };
+  const { moveToList, moveToModify } = useCustomMove();
   useEffect(() => {
     getOne(tno).then((data) => {
       console.log(data);
@@ -68,7 +41,7 @@ const ReadComponent = ({ tno }) => {
         <button
           className='m-2 w-32 rounded bg-blue-500 p-4 text-xl text-white'
           type='button'
-          onClick={moveToList}
+          onClick={() => moveToList()}
         >
           List
         </button>

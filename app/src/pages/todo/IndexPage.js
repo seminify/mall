@@ -1,24 +1,10 @@
+import useCustomMove from 'hooks/useCustomMove';
 import BasicLayout from 'layouts/BasicLayout';
-import {
-  Outlet,
-  createSearchParams,
-  useNavigate,
-  useSearchParams,
-} from 'react-router-dom';
+import { Outlet, useNavigate } from 'react-router-dom';
 
 const IndexPage = () => {
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
-  const page = searchParams.get('page')
-    ? parseInt(searchParams.get('page'))
-    : 1;
-  const size = searchParams.get('size')
-    ? parseInt(searchParams.get('size'))
-    : 10;
-  const search = createSearchParams({
-    page,
-    size,
-  }).toString();
+  const { search } = useCustomMove();
   const moveToList = () => {
     navigate({
       pathname: 'list',
