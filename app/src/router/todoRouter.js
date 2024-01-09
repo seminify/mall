@@ -2,6 +2,7 @@ import { Suspense, lazy } from 'react';
 import { Navigate } from 'react-router-dom';
 
 const Loading = <div>Loading....</div>;
+const TodoAdd = lazy(() => import('pages/todo/AddPage'));
 const TodoList = lazy(() => import('pages/todo/ListPage'));
 const TodoRead = lazy(() => import('pages/todo/ReadPage'));
 
@@ -13,6 +14,14 @@ const todoRouter = () => [
         to='list'
         replace
       />
+    ),
+  },
+  {
+    path: 'add',
+    element: (
+      <Suspense fallback={Loading}>
+        <TodoAdd />
+      </Suspense>
     ),
   },
   {
