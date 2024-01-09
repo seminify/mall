@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import {
   createSearchParams,
   useNavigate,
@@ -10,6 +11,7 @@ const getNum = (value, defaultValue) => {
 };
 
 const useCustomMove = () => {
+  const [refresh, setRefresh] = useState(false);
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const defaultPage = getNum(searchParams.get('page'), 1);
@@ -34,6 +36,7 @@ const useCustomMove = () => {
       pathname: '../list',
       search,
     });
+    setRefresh(!refresh);
   };
   const moveToModify = (tno) => {
     console.log(defaultSearch);
@@ -42,12 +45,21 @@ const useCustomMove = () => {
       search: defaultSearch,
     });
   };
+  const moveToRead = (tno) => {
+    console.log(defaultSearch);
+    navigate({
+      pathname: `../read/${tno}`,
+      search: defaultSearch,
+    });
+  };
   return {
+    refresh,
     page: defaultPage,
     size: defaultSize,
     search: defaultSearch,
     moveToList,
     moveToModify,
+    moveToRead,
   };
 };
 
