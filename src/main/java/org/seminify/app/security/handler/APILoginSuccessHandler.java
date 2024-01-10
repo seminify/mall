@@ -3,6 +3,7 @@ package org.seminify.app.security.handler;
 import java.io.IOException;
 
 import org.seminify.app.dto.MemberDTO;
+import org.seminify.app.util.JWTUtil;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
@@ -21,8 +22,10 @@ public class APILoginSuccessHandler implements AuthenticationSuccessHandler {
         log.info(authentication);
         var memberDTO = (MemberDTO) authentication.getPrincipal();
         var claims = memberDTO.getClaims();
-        claims.put("accessToken", "");
-        claims.put("refreshToken", "");
+        var accessToken = JWTUtil.generateToken(claims, 10);
+        var refreshToken = JWTUtil.generateToken(claims, 60 * 24);
+        claims.put("accessToken", accessToken);
+        claims.put("refreshToken", refreshToken);
         var gson = new Gson();
         var jsonStr = gson.toJson(claims);
         response.setContentType("application/json");
