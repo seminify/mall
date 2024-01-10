@@ -21,3 +21,13 @@ export const getOne = async (tno) => {
   const res = await axios.get(`${host}/${tno}`);
   return res.data;
 };
+
+export const putOne = async (todo) => {
+  const res = await axios.put(`${host}/${todo.tno}`, todo);
+  return res.data;
+};
+
+export const deleteOne = async (tno) => {
+  const res = await axios.delete(`${host}/${tno}`);
+  return res.data;
+};
