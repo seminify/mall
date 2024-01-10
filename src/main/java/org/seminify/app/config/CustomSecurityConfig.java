@@ -1,5 +1,7 @@
 package org.seminify.app.config;
 
+import org.seminify.app.security.handler.APILoginFailHandler;
+import org.seminify.app.security.handler.APILoginSuccessHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -21,9 +23,11 @@ public class CustomSecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
-        return httpSecurity.csrf(AbstractHttpConfigurer::disable)
-                .sessionManagement(
-                        sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .build();
+        return httpSecurity.csrf(AbstractHttpConfigurer::disable).formLogin(formLogin -> {
+            formLogin.loginPage("/api/member/login");
+            formLogin.successHandler(new APILoginSuccessHandler());
+            formLogin.failureHandler(new APILoginFailHandler());
+        }).sessionManagement(
+                sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS)).build();
     }
 }
