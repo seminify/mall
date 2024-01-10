@@ -27,3 +27,13 @@ export const getOne = async (pno) => {
   const res = await axios.get(`${host}/${pno}`);
   return res.data;
 };
+
+export const putOne = async (pno, product) => {
+  const res = await axios.put(`${host}/${pno}`, product, config);
+  return res.data;
+};
+
+export const deleteOne = async (pno) => {
+  const res = await axios.delete(`${host}/${pno}`);
+  return res.data;
+};
