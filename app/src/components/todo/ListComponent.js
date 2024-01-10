@@ -1,4 +1,5 @@
 import { getList } from 'api/todoApi';
+import FetchingModal from 'components/common/FetchingModal';
 import PageComponent from 'components/common/PageComponent';
 import useCustomMove from 'hooks/useCustomMove';
 import { useEffect, useState } from 'react';
@@ -18,18 +19,22 @@ const initialState = {
 
 const ListComponent = () => {
   const [data, setData] = useState(initialState);
+  const [fetching, setFetching] = useState(false);
   const { refresh, page, size, moveToList, moveToRead } = useCustomMove();
   useEffect(() => {
+    setFetching(true);
     getList({
       page,
       size,
     }).then((data) => {
       console.log(data);
       setData(data);
+      setFetching(false);
     });
   }, [refresh, page, size]);
   return (
     <div className='mx-2 mt-10 border-2 border-blue-100'>
+      {fetching ? <FetchingModal /> : <></>}
       <div className='mx-auto flex flex-wrap justify-center p-6'>
         {data.dtoList.map((todo) => (
           <div

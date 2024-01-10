@@ -1,4 +1,5 @@
 import { deleteOne, getOne, putOne } from 'api/todoApi';
+import FetchingModal from 'components/common/FetchingModal';
 import ResultModal from 'components/common/ResultModal';
 import useCustomMove from 'hooks/useCustomMove';
 import { useEffect, useState } from 'react';
@@ -13,6 +14,7 @@ const initialState = {
 
 const ModifyComponent = ({ tno }) => {
   const [todo, setTodo] = useState(initialState);
+  const [fetching, setFetching] = useState(false);
   const [result, setResult] = useState(null);
   const { moveToList, moveToRead } = useCustomMove();
   const onChange = (e) => {
@@ -33,22 +35,31 @@ const ModifyComponent = ({ tno }) => {
     });
   };
   const onClickDelete = () => {
+    setFetching(true);
     deleteOne(tno).then((data) => {
       console.log(data);
       setResult('Deleted');
+      setFetching(false);
     });
   };
   const onClickModify = () => {
+    setFetching(true);
     putOne(todo).then((data) => {
       console.log(data);
       setResult('Modified');
+      setFetching(false);
     });
   };
   useEffect(() => {
-    getOne(tno).then((data) => setTodo(data));
+    setFetching(true);
+    getOne(tno).then((data) => {
+      setTodo(data);
+      setFetching(false);
+    });
   }, [tno]);
   return (
     <div className='m-2 mt-10 border-2 border-sky-200 p-4'>
+      {fetching ? <FetchingModal /> : <></>}
       {result ? (
         <ResultModal
           title='처리결과'

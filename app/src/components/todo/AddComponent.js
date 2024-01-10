@@ -1,4 +1,5 @@
 import { postAdd } from 'api/todoApi';
+import FetchingModal from 'components/common/FetchingModal';
 import ResultModal from 'components/common/ResultModal';
 import useCustomMove from 'hooks/useCustomMove';
 import { useState } from 'react';
@@ -11,6 +12,7 @@ const initialState = {
 
 const AddComponent = () => {
   const [todo, setTodo] = useState(initialState);
+  const [fetching, setFetching] = useState(false);
   const [result, setResult] = useState(null);
   const { moveToList } = useCustomMove();
   const callBack = () => {
@@ -24,6 +26,7 @@ const AddComponent = () => {
     });
   };
   const onClick = () => {
+    setFetching(true);
     postAdd(todo)
       .then((result) => {
         console.log(result);
@@ -31,6 +34,7 @@ const AddComponent = () => {
         setTodo({
           ...initialState,
         });
+        setFetching(false);
       })
       .catch((error) => {
         console.error(error);
@@ -38,6 +42,7 @@ const AddComponent = () => {
   };
   return (
     <div className='m-2 mt-10 border-2 border-sky-200 p-4'>
+      {fetching ? <FetchingModal /> : <></>}
       {result ? (
         <ResultModal
           title='Add Result'

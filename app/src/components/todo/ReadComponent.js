@@ -1,4 +1,5 @@
 import { getOne } from 'api/todoApi';
+import FetchingModal from 'components/common/FetchingModal';
 import useCustomMove from 'hooks/useCustomMove';
 import { useEffect, useState } from 'react';
 
@@ -23,15 +24,19 @@ const makeDiv = (title, value) => (
 
 const ReadComponent = ({ tno }) => {
   const [todo, setTodo] = useState(initialState);
+  const [fetching, setFetching] = useState(false);
   const { moveToList, moveToModify } = useCustomMove();
   useEffect(() => {
+    setFetching(true);
     getOne(tno).then((data) => {
       console.log(data);
       setTodo(data);
+      setFetching(false);
     });
   }, [tno]);
   return (
     <div className='m-2 mt-10 border-2 border-sky-200 p-4'>
+      {fetching ? <FetchingModal /> : <></>}
       {makeDiv('Tno', todo.tno)}
       {makeDiv('Title', todo.title)}
       {makeDiv('Writer', todo.writer)}
