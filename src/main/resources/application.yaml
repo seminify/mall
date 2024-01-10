@@ -1,3 +1,7 @@
+org:
+  seminify:
+    upload:
+      path: upload
 spring:
   datasource:
     url: jdbc:mariadb://localhost/root
@@ -11,3 +15,7 @@ spring:
         format_sql: true
         highlight_sql: true
     show-sql: true
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 30MB
