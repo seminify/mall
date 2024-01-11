@@ -1,6 +1,5 @@
+import useCustomLogin from 'hooks/useCustomLogin';
 import { useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { login } from 'slices/loginSlice';
 
 const initialState = {
   email: '',
@@ -9,7 +8,7 @@ const initialState = {
 
 const LoginComponent = () => {
   const [loginParam, setLoginParam] = useState(initialState);
-  const dispatch = useDispatch();
+  const { doLogin, moveToPath } = useCustomLogin();
   const onChange = (e) => {
     loginParam[e.target.name] = e.target.value;
     setLoginParam({
@@ -17,7 +16,14 @@ const LoginComponent = () => {
     });
   };
   const onClick = () => {
-    dispatch(login(loginParam));
+    doLogin(loginParam).then((data) => {
+      console.log(data);
+      if (data.error) alert('이메일과 패스워드를 다시 확인하세요');
+      else {
+        alert('로그인 성공');
+        moveToPath('/');
+      }
+    });
   };
   return (
     <div className='m-2 mt-10 border-2 border-sky-200 p-4'>

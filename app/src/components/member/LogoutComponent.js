@@ -1,10 +1,11 @@
-import { useDispatch } from 'react-redux';
-import { logout } from 'slices/loginSlice';
+import useCustomLogin from 'hooks/useCustomLogin';
 
 const LogoutComponent = () => {
-  const dispatch = useDispatch();
+  const { doLogout, moveToPath } = useCustomLogin();
   const onClick = () => {
-    dispatch(logout());
+    doLogout();
+    alert('로그아웃되었습니다.');
+    moveToPath('/');
   };
   return (
     <div className='m-2 mt-10 border-2 border-red-200 p-4'>
