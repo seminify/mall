@@ -1,4 +1,4 @@
-import axios from 'axios';
+import jwtAxios from 'util/jwtAxios';
 
 const host = '/api/products';
 
@@ -9,12 +9,12 @@ const config = {
 };
 
 export const postAdd = async (product) => {
-  const res = await axios.post(`${host}`, product, config);
+  const res = await jwtAxios.post(`${host}`, product, config);
   return res.data;
 };
 
 export const getList = async ({ page, size }) => {
-  const res = await axios.get(`${host}/list`, {
+  const res = await jwtAxios.get(`${host}/list`, {
     params: {
       page,
       size,
@@ -24,16 +24,16 @@ export const getList = async ({ page, size }) => {
 };
 
 export const getOne = async (pno) => {
-  const res = await axios.get(`${host}/${pno}`);
+  const res = await jwtAxios.get(`${host}/${pno}`);
   return res.data;
 };
 
 export const putOne = async (pno, product) => {
-  const res = await axios.put(`${host}/${pno}`, product, config);
+  const res = await jwtAxios.put(`${host}/${pno}`, product, config);
   return res.data;
 };
 
 export const deleteOne = async (pno) => {
-  const res = await axios.delete(`${host}/${pno}`);
+  const res = await jwtAxios.delete(`${host}/${pno}`);
   return res.data;
 };
