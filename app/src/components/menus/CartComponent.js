@@ -1,18 +1,12 @@
+import { cartTotalState } from 'atoms/cartState';
 import useCustomCart from 'hooks/useCustomCart';
 import useCustomLogin from 'hooks/useCustomLogin';
-import { useEffect } from 'react';
+import { useRecoilValue } from 'recoil';
 
 const CartComponent = () => {
   const { isLogin, loginState } = useCustomLogin();
-  const { cartItems, refreshCart, changeCart } = useCustomCart();
-  const total = () => {
-    let total = 0;
-    for (const item of cartItems) total += item.price * item.qty;
-    return total;
-  };
-  useEffect(() => {
-    if (isLogin) refreshCart();
-  }, [isLogin]);
+  const { cartItems, changeCart } = useCustomCart();
+  const total = useRecoilValue(cartTotalState);
   return (
     <div className='w-full'>
       {isLogin ? (
