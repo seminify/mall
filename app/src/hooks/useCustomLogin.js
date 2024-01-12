@@ -1,4 +1,5 @@
 import { loginPost } from 'api/memberApi';
+import { cartState } from 'atoms/cartState';
 import signinState from 'atoms/signinState';
 import { Navigate, useNavigate } from 'react-router';
 import { createSearchParams } from 'react-router-dom';
@@ -9,6 +10,7 @@ const useCustomLogin = () => {
   const navigate = useNavigate();
   const [loginState, setLoginState] = useRecoilState(signinState);
   const resetState = useResetRecoilState(signinState);
+  const resetCartState = useResetRecoilState(cartState);
   const exceptionHandle = (exception) => {
     console.log(exception);
     const error = exception.response.data.error;
@@ -46,6 +48,7 @@ const useCustomLogin = () => {
   const doLogout = () => {
     removeCookie('member');
     resetState();
+    resetCartState();
   };
   const moveToPath = (path) => {
     navigate(`${path}`, {
