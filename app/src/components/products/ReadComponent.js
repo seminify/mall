@@ -1,5 +1,7 @@
 import { getOne } from 'api/productsApi';
 import FetchingModal from 'components/common/FetchingModal';
+import useCustomCart from 'hooks/useCustomCart';
+import useCustomLogin from 'hooks/useCustomLogin';
 import useCustomMove from 'hooks/useCustomMove';
 import { useEffect, useState } from 'react';
 
@@ -15,6 +17,24 @@ const ReadComponent = ({ pno }) => {
   const [product, setProduct] = useState(initialState);
   const [fetching, setFetching] = useState(false);
   const { moveToList, moveToModify } = useCustomMove();
+  const { loginState } = useCustomLogin();
+  const { cartItems, changeCart } = useCustomCart();
+  const onClick = () => {
+    let qty = 1;
+    const addedItem = cartItems.filter((item) => item.pno === parseInt(pno))[0];
+    if (addedItem) {
+      if (
+        window.confirm('이미 추가된 상품입니다. 추가하시겠습니까? ') === false
+      )
+        return;
+      qty = addedItem.qty + 1;
+    }
+    changeCart({
+      email: loginState.email,
+      pno,
+      qty,
+    });
+  };
   useEffect(() => {
     setFetching(true);
     getOne(pno).then((data) => {
@@ -68,6 +88,13 @@ const ReadComponent = ({ pno }) => {
         ))}
       </div>
       <div className='flex justify-end p-4'>
+        <button
+          className='m-2 inline-block w-32 rounded bg-green-500 p-4 text-xl text-white'
+          type='button'
+          onClick={onClick}
+        >
+          Add Cart
+        </button>
         <button
           className='m-2 inline-block w-32 rounded bg-red-500 p-4 text-xl text-white'
           type='button'
