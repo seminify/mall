@@ -1,9 +1,9 @@
+import { useQuery } from '@tanstack/react-query';
 import { getList } from 'api/productsApi';
 import FetchingModal from 'components/common/FetchingModal';
 import PageComponent from 'components/common/PageComponent';
 import useCustomLogin from 'hooks/useCustomLogin';
 import useCustomMove from 'hooks/useCustomMove';
-import { useEffect, useState } from 'react';
 
 const initialState = {
   dtoList: [],
@@ -19,28 +19,31 @@ const initialState = {
 };
 
 const ListComponent = () => {
-  const [data, setData] = useState(initialState);
-  const [fetching, setFetching] = useState(false);
   const { refresh, page, size, moveToList, moveToRead } = useCustomMove();
-  const { exceptionHandle } = useCustomLogin();
-  useEffect(() => {
-    setFetching(true);
-    getList({
-      page,
-      size,
-    })
-      .then((data) => {
-        console.log(data);
-        setData(data);
-        setFetching(false);
-      })
-      .catch((error) => exceptionHandle(error));
-  }, [refresh, page, size]);
+  const { moveToLoginReturn } = useCustomLogin();
+  const { isFetching, data, isError } = useQuery({
+    queryKey: [
+      'products/list',
+      {
+        page,
+        size,
+        refresh,
+      },
+    ],
+    queryFn: () =>
+      getList({
+        page,
+        size,
+      }),
+    staleTime: 1000 * 60,
+  });
+  const products = data || initialState;
+  if (isError) return moveToLoginReturn();
+  if (isFetching) return <FetchingModal />;
   return (
     <div className='mx-2 mt-10 border-2 border-blue-100'>
-      {fetching ? <FetchingModal /> : <></>}
       <div className='mx-auto flex flex-wrap p-6'>
-        {data.dtoList.map((product) => (
+        {products.dtoList.map((product) => (
           <div
             className='w-1/2 rounded border-2 p-1 shadow-md'
             key={product.pno}
@@ -68,7 +71,7 @@ const ListComponent = () => {
         ))}
       </div>
       <PageComponent
-        data={data}
+        data={products}
         movePage={moveToList}
       />
     </div>
