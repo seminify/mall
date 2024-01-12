@@ -1,11 +1,14 @@
-import { useDispatch, useSelector } from 'react-redux';
+import { loginPost } from 'api/memberApi';
+import signinState from 'atoms/signinState';
 import { Navigate, useNavigate } from 'react-router';
 import { createSearchParams } from 'react-router-dom';
-import { loginPostAsync, logout } from 'slices/loginSlice';
+import { useRecoilState, useResetRecoilState } from 'recoil';
+import { removeCookie, setCookie } from 'util/cookieUtil';
 
 const useCustomLogin = () => {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const [loginState, setLoginState] = useRecoilState(signinState);
+  const resetState = useResetRecoilState(signinState);
   const exceptionHandle = (exception) => {
     console.log(exception);
     const error = exception.response.data.error;
@@ -29,14 +32,20 @@ const useCustomLogin = () => {
       return;
     }
   };
-  const loginState = useSelector((state) => state.loginSlice);
   const isLogin = loginState.email ? true : false;
+  const saveAsCookie = (data) => {
+    setCookie('member', JSON.stringify(data), 1);
+    setLoginState(data);
+  };
   const doLogin = async (loginParam) => {
-    const action = await dispatch(loginPostAsync(loginParam));
-    return action.payload;
+    const result = await loginPost(loginParam);
+    console.log(result);
+    saveAsCookie(result);
+    return result;
   };
   const doLogout = () => {
-    dispatch(logout());
+    removeCookie('member');
+    resetState();
   };
   const moveToPath = (path) => {
     navigate(`${path}`, {
@@ -58,6 +67,7 @@ const useCustomLogin = () => {
     exceptionHandle,
     loginState,
     isLogin,
+    saveAsCookie,
     doLogin,
     doLogout,
     moveToPath,
