@@ -26,3 +26,8 @@ export const getAccessToken = async (code) => {
   const accessToken = res.data.access_token;
   return accessToken;
 };
+
+export const getMemberWithAccessToken = async (accessToken) => {
+  const res = await axios.get(`/api/member/kakao?accessToken=${accessToken}`);
+  return res.data;
+};
