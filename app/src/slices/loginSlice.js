@@ -6,7 +6,9 @@ const initialState = {
   email: '',
 };
 
-export const login = createAsyncThunk('login', (param) => loginPost(param));
+export const loginPostAsync = createAsyncThunk('loginPostAsync ', (param) =>
+  loginPost(param),
+);
 
 const loadMemberCookie = () => {
   const memberInfo = getCookie('member');
@@ -19,6 +21,11 @@ const loginSlice = createSlice({
   name: 'LoginSlice',
   initialState: loadMemberCookie() || initialState,
   reducers: {
+    login: (state, action) => {
+      const payload = action.payload;
+      setCookie('member', JSON.stringify(payload), 1);
+      return payload;
+    },
     logout: () => {
       removeCookie('member');
       return {
@@ -28,20 +35,20 @@ const loginSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(login.fulfilled, (state, action) => {
+      .addCase(loginPostAsync.fulfilled, (state, action) => {
         const payload = action.payload;
         if (!payload.error) setCookie('member', JSON.stringify(payload), 1);
         return payload;
       })
-      .addCase(login.pending, () => {
+      .addCase(loginPostAsync.pending, () => {
         console.log('pending');
       })
-      .addCase(login.rejected, () => {
+      .addCase(loginPostAsync.rejected, () => {
         console.log('rejected');
       });
   },
 });
 
-export const { logout } = loginSlice.actions;
+export const { login, logout } = loginSlice.actions;
 
 export default loginSlice.reducer;
