@@ -2,6 +2,7 @@ package org.seminify.app.service;
 
 import org.seminify.app.domain.Member;
 import org.seminify.app.dto.MemberDTO;
+import org.seminify.app.dto.MemberModifyDTO;
 
 public interface MemberService {
     default MemberDTO entityToDTO(Member member) {
@@ -11,4 +12,6 @@ public interface MemberService {
     }
 
     MemberDTO getKakaoMember(String accessToken);
+
+    void modifyMember(MemberModifyDTO memberModifyDTO);
 }

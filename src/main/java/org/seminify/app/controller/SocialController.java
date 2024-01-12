@@ -2,9 +2,12 @@ package org.seminify.app.controller;
 
 import java.util.Map;
 
+import org.seminify.app.dto.MemberModifyDTO;
 import org.seminify.app.service.MemberService;
 import org.seminify.app.util.JWTUtil;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -28,5 +31,12 @@ public class SocialController {
         claims.put("accessToken", jwtAccessToken);
         claims.put("refreshToken", jwtRefreshToken);
         return claims;
+    }
+
+    @PutMapping("modify")
+    public Map<String, String> modify(@RequestBody MemberModifyDTO memberModifyDTO) {
+        log.info("MemberModifyDTO : " + memberModifyDTO);
+        memberService.modifyMember(memberModifyDTO);
+        return Map.of("RESULT", "MODIFIED");
     }
 }

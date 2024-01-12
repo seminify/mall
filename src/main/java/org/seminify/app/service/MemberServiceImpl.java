@@ -5,6 +5,7 @@ import java.util.LinkedHashMap;
 import org.seminify.app.domain.Member;
 import org.seminify.app.domain.MemberRole;
 import org.seminify.app.dto.MemberDTO;
+import org.seminify.app.dto.MemberModifyDTO;
 import org.seminify.app.repository.MemberRepository;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -75,5 +76,15 @@ public class MemberServiceImpl implements MemberService {
         memberRepository.save(socialMember);
         var memberDTO = entityToDTO(socialMember);
         return memberDTO;
+    }
+
+    @Override
+    public void modifyMember(MemberModifyDTO memberModifyDTO) {
+        var result = memberRepository.findById(memberModifyDTO.getEmail());
+        var member = result.orElseThrow();
+        member.setPw(passwordEncoder.encode(memberModifyDTO.getPw()));
+        member.setSocial(false);
+        member.setNickname(memberModifyDTO.getNickname());
+        memberRepository.save(member);
     }
 }
