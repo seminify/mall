@@ -1,5 +1,6 @@
 import useCustomLogin from 'hooks/useCustomLogin';
 import { useState } from 'react';
+import KakaoLoginComponent from './KakaoLoginComponent';
 
 const initialState = {
   email: '',
@@ -68,6 +69,7 @@ const LoginComponent = () => {
           </div>
         </div>
       </div>
+      <KakaoLoginComponent />
     </div>
   );
 };
